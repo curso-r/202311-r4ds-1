@@ -29,23 +29,27 @@ Fora do horário de aula ou monitoria:
 
 ## Slides
 
-| Slide |
-|:------|
+| Slide                                                                                                   |
+|:--------------------------------------------------------------------------------------------------------|
+| [01-introducao-ao-curso.pdf](https://curso-r.github.io/202311-r4ds-1/slides/01-introducao-ao-curso.pdf) |
+| [02-introducao-ao-r.pdf](https://curso-r.github.io/202311-r4ds-1/slides/02-introducao-ao-r.pdf)         |
+| [03-importacao.pdf](https://curso-r.github.io/202311-r4ds-1/slides/03-importacao.pdf)                   |
+| [04-manipulacao.pdf](https://curso-r.github.io/202311-r4ds-1/slides/04-manipulacao.pdf)                 |
 
 ## Scripts utilizados em aula
 
-| Exemplo |
-|:--------|
-
-## Práticas
-
-| Exemplo |
-|:--------|
+| Exemplo                                                                                                                  |
+|:-------------------------------------------------------------------------------------------------------------------------|
+| [01-introducao-ao-R.R](https://curso-r.github.io/202311-r4ds-1/scripts/01-introducao-ao-R.R)                             |
+| [02-importacao.R](https://curso-r.github.io/202311-r4ds-1/scripts/02-importacao.R)                                       |
+| [03-manipulacao.R](https://curso-r.github.io/202311-r4ds-1/scripts/03-manipulacao.R)                                     |
+| [04-valores-especiais-e-faltantes.R](https://curso-r.github.io/202311-r4ds-1/scripts/04-valores-especiais-e-faltantes.R) |
 
 ## Lição de casa
 
-| Exercício |
-|:----------|
+| Exercício                                                                 |
+|:--------------------------------------------------------------------------|
+| [aula-01.R](https://curso-r.github.io/202311-r4ds-1/exercicios/aula-01.R) |
 
 ## Material extra
 
