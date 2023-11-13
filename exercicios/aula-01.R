@@ -56,7 +56,7 @@
 #
 # class(nome_do_vetor) # - verificar a classe de um vetor
 #
-# lenght(nome_do_vetor) # - verificar quantos elementos tem em um vetor
+# length(nome_do_vetor) # - verificar quantos elementos tem em um vetor
 #
 # mean(nome_do_vetor) # - para vetores numéricos. essa função calcula a
 # média dos valores em um vetor.
