@@ -128,15 +128,14 @@ help(nrow)
 
 # PAREI AQUI NA AULA 1 :) --------------------------
 
+# Outro tipo de documentação: vignette. 
+
 # Uma função muito útil para data frames é a View
 View(mtcars)
+head(mtcars)
+
 # evitar em bases muito grandes, e em dados geoespaciais
 
-
-# E o view com v minúsculo? só com o tidyverse carregado
-
-View(mtcars) # R base
-view(mtcars) # tidyverse
 
 # Uma função pode ter mais de um argumento
 # Argumentos são sempre separados por vírgulas
@@ -147,6 +146,8 @@ sum(2, 3, 4)
 round(1.3453456234, digits = 2) 
 
 round(1.3453456234, 2)
+
+round(digits = 2, x = 1.3453456234)
 
 # usar o ponto para separador decimal dentro do R.
 
@@ -179,17 +180,19 @@ soma
 # ATALHO para a <- : ALT - (alt menos)
 
 # Em geral, começaremos a nossa análise com:
-nossa_base <- funcao_que_carrega_uma_base("caminho/ate/arquivo")
+# carregar ferramentas -> pacotes!
+# nossa_base <- funcao_que_carrega_uma_base("caminho/ate/arquivo.csv")
 
 # O erro "could not find function" significa que 
 # você pediu para o R avaliar uma função que
 # não existe. O mesmo vale para objetos:
 
-nossa_base
+nossa_base 
 
 # Dicas:
 # - sempre leia as mensagens de erro
 # - verifique no Environment se um objeto existe
+# - verifique se está escrito exatamente igual ao environment
 
 # No nosso caso:
 imdb <- read.csv("dados/imdb.csv")
@@ -199,7 +202,7 @@ imdb <- read.csv("dados/imdb.csv")
 resultado <- 33 / 11
 
 # atualizar um objeto
-resultado <- resultado * 5
+resultado_vezes_5 <- resultado * 5
 # tomar cuidado com salvar coisas em objetos com o mesmo nome!
 
 # A nossa base imdb só será alterada quando salvarmos
@@ -243,12 +246,15 @@ E_algumasPoucas.Pessoas_RENUNCIAMconvenções #
 
 # 1. Apague os objetos criados na aba environment, clicando na  vassoura!
 
+
+
 # 2. Escrevam (não copiem e colem) o código que lê a base e 
 # a salva num objeto imdb. Rodem o código e observem 
 # na aba environment se o objeto imdb apareceu.
 
 
 imdb <- read.csv("dados/imdb.csv")
+
 
 
 
@@ -282,13 +288,23 @@ a
 a <- 10
 class(a)
 
-# Caracteres (character, strings)
+# Caracteres (character, strings) - textos!
 
 obj <- "a"
 obj2 <- "masculino"
+obj3 <- 'abc'
+# obj4 <- "abc' # isso nao funciona!
+
+dez_mil <- "10000" # se tem aspas, é texto!
+class(dez_mil)
+class(as.numeric(dez_mil))
+
+"13/11/2023" # se tem aspas, é texto!
 
 class(obj)
 class(obj2)
+
+
 
 # lógicos (logical, booleanos)
 
@@ -296,6 +312,7 @@ verdadeiro <- TRUE # 1
 falso <- FALSE # 0
 
 class(verdadeiro)
+
 class(falso)
 
 # Data frames (classe do objeto) - tibble, df, tabela
@@ -303,10 +320,16 @@ class(falso)
 class(mtcars)
 class(imdb)
 
+imdb$ano
+class(imdb$ano) # integer - número inteiro, não permite casas decimais!
 
 imdb$nota_imdb
 
-class(imdb$nota_imdb)
+imdb$nota_imdb
+
+class(imdb$nota_imdb) # numerico, numero c/ casas decimais
+
+
 
 
 # Como acessar as colunas de uma base?
@@ -315,16 +338,21 @@ imdb$data_lancamento
 # Como vemos a classe de uma coluna?
 class(imdb$data_lancamento)
 
+Sys.Date()
+class(Sys.Date())
+Sys.time()
+class(Sys.time())
 
+# Numero, texto, logico
+# data, fator (dados categóricos)
 
 # Vetores -----------------------------------------------------------------
 
 # Vetores são conjuntos de valores: use a função c()
 
 vetor1 <- c(1, 4, 3, 10)
+
 vetor2 <- c("a", "b", "z")
-
-
 
 vetor1
 vetor2
@@ -365,6 +393,8 @@ class(vetor2)
 
 vetor <- c(1, 2, "a")
 
+
+
 vetor
 class(vetor)
 
@@ -386,6 +416,11 @@ vetor - 1
 vetor / 2
 vetor * 10
 
+# Reciclagem
+vetor + 1
+
+
+
 # Você também pode fazer operações que envolvem mais de um vetor:
 
 vetor1 <- c(1, 2, 3)
@@ -393,22 +428,48 @@ vetor2 <- c(10, 20, 30)
 
 vetor1 + vetor2
 
+# R base: instalado apenas o R.
+
 # Pacotes -----------------------------------------------------------------
 
-# Para instalar pacotes
+# RStudio -> software que ajuda a gente a programar em R.
+# Posit -> empresa que criou e mantém o RStudio
+# Hadley Wickham 
 
+# Para instalar pacotes
 install.packages("tidyverse") # busca no CRAN
+# instala uma vez!
+# exceto:
+# outro usuario
+# quando atualiza o R
 
 
 starwars
 
+
+
+# cada vez que for usar, precisa carregar.
+
 library(tidyverse) # para poder usar o pacote
 library(dplyr)
 
+View(starwars) # View do R base
+view(starwars) # do tidyverse
+
 # Também é possível acessar as funções usando ::
+# mesmo sem o pacote carregado!
+dplyr::starwars
+
+
 dplyr::filter_at()
 dplyr::transmute()
 
 # aproveite o auto complete
 
 dplyr::filter()
+
+
+# E o view com v minúsculo? só com o tidyverse carregado
+
+View(mtcars) # R base
+view(mtcars) # tidyverse
