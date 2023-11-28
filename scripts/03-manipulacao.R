@@ -3,17 +3,22 @@ library(tidyverse)
 
 # Base de dados -----------------------------------------------------------
 
+#imdb_read.csv2 <- read.csv2("dados/imdb2.csv")
+#imdb_read_csv2 <- read_csv2("dados/imdb2.csv")
+
 imdb <- read_rds("dados/imdb.rds")
 
 # Jeito de ver a base -----------------------------------------------------
 
-
-
 # R base
 names(imdb)
+nomes_da_base <- names(imdb)
+
 View(imdb) # Cuidado com bases muito grandes!
 head(imdb, n = 10)
 tail(imdb, n = 10)
+
+ultimas_10_linhas <- tail(imdb, n = 10)
 
 # tidyverse
 glimpse(imdb)
@@ -22,13 +27,35 @@ slice_sample(imdb, n = 1000)
 # SKIM - relatório da base
 skimr::skim(imdb)
 
+# alternativamente
+library(skimr)
+skim(imdb)
+
 # DICA: padronizar nomes das colunas
 
 iris
 
 names(iris)
 
+#janitor::clean_names(iris)
+iris
+
 iris_limpo <- janitor::clean_names(iris)
+
+library(readxl)
+
+tabela_zuada <- read_excel("dados/tabela_zuada.xlsx") 
+
+tabela_zuada_arrumada <- janitor::clean_names(tabela_zuada)
+
+tabela_zuada_arrumada
+
+#precisa ter executado install.packages("janitor")
+
+# lembrando que :: é uma alternativa sempre
+
+# library(janitor)
+# iris_limpos <- clean_names(iris)
 
 names(iris_limpo)
 
@@ -58,15 +85,13 @@ imdb
 # para modificar, precisa usar <- e salvar em um objeto!
 imdb_titulos <- select(imdb, titulo)
 
-
-
-
-
 # Selecionando várias colunas
 
 select(imdb, titulo, ano, orcamento) # respeita a ordem
 
 select(imdb, orcamento, ano, titulo) # respeita a ordem
+
+orcamento_ano_titulo <- select(imdb, orcamento, ano, titulo)
 
 1:10 # sequencia
 
@@ -105,20 +130,37 @@ select(imdb, id_filme:num_avaliacoes)
 # salvar o resultado do select em um objeto
 imdb_selecionado <- select(imdb, titulo, ano, generos)
 
+select(tabela_zuada, `Nome com espaço`, `12313 nome ZUADAÇO (1º GRAU É LEGAL)`)
+# ruim!
+
+select(tabela_zuada_arrumada, nome_com_espaco)
+# bom!
 
 # arrange -----------------------------------------------------------------
-
 
 # nome_verbo(nome_base, regras)
 
 # Ordenando linhas de forma crescente de acordo com
 # os valores de uma coluna
 
+View(imdb)
+
 # por padrao é ordenacao crescente
 View(arrange(imdb, orcamento))
 
 # Agora de forma decrescente
 View(arrange(imdb, desc(orcamento)))
+
+View(arrange(imdb, titulo))
+# e com texto?
+# mas ele tem uma ordem própria (lexicográfica)
+
+
+# a ordem "padrão" funciona para textos em inglês:
+tabela_exemplo <- tibble(texto = c("Ámérica", "Asia", "Éuropa", "Europa"))
+
+arrange(tabela_exemplo, texto, .locale = "pt_BR")
+# uma ordem boa para brasileiros é essa ^"
 
 # só vai mudar a ordem no objeto se salvar, com a <-
 imdb_ordenado <- arrange(imdb, desc(orcamento))
@@ -141,6 +183,8 @@ View(arrange(imdb, direcao))
 View(arrange(imdb, desc(ano), orcamento))
 
 # O que acontece com o NA? Sempre fica no final!
+
+View(arrange(imdb, desc(receita)))
 
 df <- tibble(x = c(NA, 2, 1), y = c(1, 2, 3))
 
@@ -184,9 +228,12 @@ imdb_pipe <- imdb |> # usando a base do IMDB
   # ordenar de forma decrescente pela nota
   arrange(desc(nota_imdb))
 
+imdb |> 
+  select(titulo, nota_imdb) |>
+  arrange(desc(nota_imdb))
+
 # ATALHO DO |>: CTRL (command) + SHIFT + M
-
-
+ 
 # pipe nativo - Atalho: CTRL SHIFT M
 imdb |>
   select(titulo, ano, nota_imdb, num_avaliacoes) |>
@@ -197,7 +244,19 @@ imdb %>%
   select(titulo, ano, nota_imdb, num_avaliacoes) %>%
   arrange(desc(nota_imdb))
 
+# se vc não tem o R 4.1, pode usar esse ^ e o atalho é o mesmo
+# precisa do pacote magrittr, que já vem instalado quando vc instala o tidyverse
 
+# O autocomplete é muito legal no pipe + RStudio
+
+imdb |> 
+  select(num_avaliacoes, titulo, descricao)
+
+imdb |> 
+  arrange(receita_eua)
+
+tabela_zuada |> 
+  select(`12313 nome ZUADAÇO (1º GRAU É LEGAL)`, `Nome com espaço`)
 
 # PREPARATORIO PRO FILTER: DISTINCT -----------
 # olhar as categorias de uma variável:
@@ -208,6 +267,8 @@ distinct(imdb, direcao) # deixa apenas valores unicos!
 distinct(imdb, ano, idioma) |>
   arrange(ano) |>
   View()
+# versão alternativa de
+# View(distinct(arrange(imdb, ano, idioma)))
 
 
 imdb |>
@@ -221,16 +282,26 @@ unique(imdb$direcao)
 
 imdb |>
   count(direcao)
+# versao alternativa de count(imdb, direcao)
 
+imdb |> 
+  count(direcao) |> 
+  View()
+
+count(imdb, direcao) |> View()
+ 
 count(imdb, direcao, ano) |> View()
 
 diretores_ordenados <- imdb |>
   count(direcao, sort = TRUE)
 
+diretores_ordenados_manualmente <- imdb |> 
+  count(direcao) |> 
+  arrange(desc(n))
+
 imdb |>
   filter(direcao == "Quentin Tarantino") |>
   count(producao)
-
 
 # filter ------------------------------------------------------------------
 
@@ -248,8 +319,12 @@ imdb |>
 x <- 1
 # x = 1 - igual sozinho é uma atribuicao
 
+2 == 1
+
 # Teste com resultado verdadeiro
 x == 1
+# R, responde à seguinte pergunta: "o conteúdo do objeto 'x' é igual ao valor 1?" e me devolva
+
 
 # Teste com resultado falso
 x == 2
@@ -262,6 +337,26 @@ x == 2
 
 
 filter(imdb, direcao == "Quentin Tarantino")
+
+
+imdb |> filter(direcao == "Quentin Tarantino") 
+# o comando acima é equivalente a ^
+
+# lembrando que não precisamos necessariamente pular linhas, embora fique mais organizado e bonito
+
+imdb |> 
+  filter(direcao == "Quentin Tarantino") |> 
+  count(producao)
+
+imdb |> 
+  filter(direcao == "Quentin Tarantino") |> 
+  count(generos)
+
+imdb |> 
+  filter(direcao == "Quentin Tarantino") |> 
+  filter(generos == "Comedy") |> 
+  View()
+  # posso fazer vários filtros!
 
 # reescrever com pipe
 
@@ -282,13 +377,22 @@ imdb |>
     producao == "Miramax"
   ) |>
   View()
+# esse aqui é a mesma coisa que fazer
 
-
+#imdb |> 
+# filter(direcao == "Quentin Tarantino") |>
+# filter(duracao == "Miramax") |>
+# View()
 
 ## Comparações lógicas -------------------------------
 
 # maior
 x > 3
+# se uma linha de código do R tem ">", "<", "==" ou outros comandos que veremos
+# esses comandos são chamados de "comparadores lógicos" e 
+# eles forçam o R a responder a pergunta
+# "Quem é maior (ou menor, ou igual) entre o que está à esquerda do comparador e à direita?"
+
 x > 0
 # menor
 x < 3
@@ -319,14 +423,43 @@ imdb |>
 imdb |> filter(ano > 2010 & nota_imdb > 8.5)
 
 ## Gastaram menos de 100 mil, faturaram mais de 1 milhão
+# o que será que acontece com os NA?
+
+NA > 2010
+
 imdb |>
   filter(orcamento < 100000, receita > 1000000) |>
   View()
+
+# MUITO CUIDADO!!!!! os NA por padrão, se estiverem envolvidos em alguma das
+# condições de pertencimento do "filter" são jogador fora. 
+# isso é, a menos que vc trate explicitamente, nunca vai ter um NA
+# dentre as colunas em que aplicamos condicionais no filter
+
 
 ## Lucraram
 imdb |>
   filter(receita - orcamento > 0) |>
   View()
+
+# deu 2584 linhas com lucro (receita > orcamento) não porque só esses
+# filmes deram lucro, mas porque são esses filmes que deram lucro E 
+# que a gente tem informação pra conseguir verificar isso.
+
+# vamos parar pra pensar 1 minuto...
+
+#
+
+TRUE | FALSE
+# O "|" faz o R responder À pergunta "algum dos elementos à esquerda ou à direita de "|" é TRUE?"
+
+TRUE | NA
+
+imdb |> 
+  filter(is.na(receita) | is.na(orcamento) | receita-orcamento > 0)
+
+# agora falamos pro R me trazer os filmes pros quais ele não conseguiu fazer a conta
+# os filmes que deram lucro e ele conseguiu fazer a conta
 
 imdb |>
   # é NA na receita OU é NA no orçamento
@@ -335,12 +468,18 @@ imdb |>
   # nrow()
   View()
 
+imdb |> 
+  filter(ano >= 2020 | ano < 1910)
 
-
+imdb |> 
+  filter(orcamento > 10000000 | direcao == "Steven Spielberg") |>
+  View()
 
 ## Comparações lógicas -------------------------------
 
 x != 2
+# lancei pro R a pergunta "o que está à esquerda do comparador é diferente do que está à direita?"
+
 x != 1
 
 # Exemplo com filtros!
@@ -353,7 +492,8 @@ imdb |>
 # operador %in%
 # o x é igual à 1
 # o x faz parte do conjunto 1, 2 e 3? SIM
-x %in% c(1, 2, 3)
+x %in% c(1, 2, 3) 
+
 # o x faz parte do conjunto 2, 3 e 4? NÃO
 x %in% c(2, 3, 4)
 
@@ -371,6 +511,13 @@ imdb |>
   filter(
     direcao == "Matt Reeves" | direcao == "Christopher Nolan"
   )
+
+# imdb |> 
+#   filter(
+#     direcao == c("Matt Reeves", "Christopher Nolan")
+#   )
+# até "roda", mas não faz o que a gente quer. esse comando
+# faz só a primeira comparação ^
 
 
 # ISSO NAO FUNCIONA
@@ -406,6 +553,12 @@ x >= 3 # verdadeiro
 x <= 7 # verdadeiro
 
 x >= 3 & x <= 7 #
+# eu poderia pensar que 3 <= x <= 7 funciona...
+# MAS NÃO
+3 <= x == 7
+# não pode misturar comparadores lógicos que não sejam "|", "!", "&" na mesma linha
+# porque o R só faz um de cada vez entre ==, !=, <=, >=, <, >
+# tem uma exceção que é quando vc usa (), mas aí é que nem fazer separado
 
 x >= 3 & x <= 4
 
@@ -452,7 +605,6 @@ imdb |>
   View()
 
 
-
 ## Operadores lógicos -------------------------------
 
 ## ! - Negação - É o "contrário"
@@ -486,14 +638,64 @@ imdb |>
   filter(!is.na(orcamento)) |>
   View()
 
-
-
 imdb |>
   filter(!is.na(orcamento), !is.na(receita)) |>
   View()
 
 
+# COISAS QUE PODEM DAR ERRADO NO FILTER!!
+
+imdb |> 
+  filter(direcao)
+# Error in `filter()`:
+#   ℹ In argument: `direcao`.
+# Caused by error:
+#   ! `..1` must be a logical vector, not a character vector.
+
+imdb |> 
+  filter(orcamento-receita)
+
+imdb |> 
+  filter(orcamento > receita)
+# isso aqui funciona, porque tem comparador!
+
+
+# outro erro comum é esquecermos de usar o "&" ou o "|"
+imdb |> 
+  filter(2010 <= ano <= 2020)
+# ele dá "unexpected '<=' porque o R de fato não espera dois <= 
+# na mesma frase. ele é "devagar", só pode comparar 2 números, valores, textos etc por vez
+
+imdb |> 
+  filter(2010 <= ano, ano <= 2020)
+
+imdb |> 
+  filter(2010 <= ano & ano <= 2020)
+
+# esquecer a virgula
+
+imdb |> 
+  filter(ano <= 2010 direcao == "Quentin Tarantino")
+# falta a vírgula! o "x" do rstudio nos avisa dessa ausência
+
+imdb |> 
+  filter(ano <= 2010, direcao == "Quentin Tarantino")  
+
+imdb |> 
+  filter(ano %in% c(2010, 2019, 2021))
+
+imdb |> 
+  filter(ano == c(2010, 2019, 2021))
+# esse aqui é pergiso!!!! PARECE que deu certo, mas o que ele fez foi
+# comparar o "ano" com
+# 2010, 2019, 2021, 2010, 2019, 2021, ...
+# o que aconteceu aqui fou uma RECICLAGEM do vetor
+# ele compara o vetor "ano" de 28490 linhas com o o vetor 2010, 2019, 2021 de 3 entradas
+# e tenta repetir o menor pra caber no maior
+
 #
+
+
 
 imdb |>
   mutate(descricao_minusculo = str_to_lower(descricao)) |>
